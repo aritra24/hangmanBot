@@ -11,8 +11,6 @@ def game():
 		message = req.get('message')
 		print()
 		session['id'] = message['from']['id']
-		# if 'game started' not in session:
-			# session['game started'] = False
 		if message['text'] == 'New game':
 			(status, session['word'], session['current_word'], session['tries']) = new_game()
 			if not status:

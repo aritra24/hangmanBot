@@ -49,10 +49,9 @@ def if_lost(tries):
 	return False
 
 def reply(bot_id, message, chat_id):
-	# url = 'https://api.telegram.org/bot' + str(bot_id) + '/sendMessage'
-	# url = 'https://localhost'
+	url = 'https://api.telegram.org/bot' + str(bot_id) + '/sendMessage'
 	request = {'chat_id' : chat_id, 'text' : message}
-	# response = requests.post(url, json = request)
+	response = requests.post(url, json = request)
 	print(request)
 
 def __init__():
