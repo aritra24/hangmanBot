@@ -2,6 +2,7 @@ from flask import Flask, session, request
 from helpers import *
 
 app = Flask(__name__)
+app.secret_key = 'Super Secret Key'
 bot_id = os.environ['BOT_ID']
 
 @app.route('/', methods=['POST'])
@@ -31,5 +32,4 @@ def game():
 	print()
 
 if __name__ == '__main__':
-	app.secret_key = 'Super Secret Key'
 	app.run(debug = True)
