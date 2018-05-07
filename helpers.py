@@ -1,5 +1,5 @@
 import os
-# import requests
+import requests
 
 def get_new_word():
 	return ['A','B','C','D',' ','E','F','G','A']
