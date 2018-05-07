@@ -10,14 +10,14 @@ def game():
 	message = req.get('message')
 	print()
 	session['id'] = message['from']['id']
-	if message['text'] == 'New game':
+	if message['text'].upper() == 'NEW GAME':
 		(status, session['word'], session['current_word'], session['tries']) = new_game()
 		if not status:
 			reply(bot_id, 'Failed to start new game', session['id'])
 		else:
 			session['game started'] = True
 			reply(bot_id, "Enter a character", session['id'])
-	elif message['text'] == 'Cancel' and session['game started']:
+	elif message['text'] == 'CANCEL' and session['game started']:
 		session.clear()
 	elif session['game started']:
 		(status, current_word) = guess(session['word'], session['current_word'], session['tries'], message['text'])

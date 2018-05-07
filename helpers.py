@@ -16,6 +16,7 @@ def new_game():
 	return (True, word, current_word, tries)
 
 def guess(word, current_word, tries, letter):
+	letter = letter.upper()
 	if letter not in word:
 		tries -= 1
 		return (False, current_word)
