@@ -1,10 +1,8 @@
 import os
 import requests
 
-
 def get_new_word():
-    return ['A', 'B', 'C', 'D', ' ', 'E', 'F', 'G', 'A']
-
+    return ['A','B','C','D',' ','E','F','G','A']
 
 def new_game():
     word = get_new_word()
@@ -17,7 +15,6 @@ def new_game():
     tries = 3
     return (True, word, current_word, tries)
 
-
 def guess(word, current_word, tries, letter):
     letter = letter.upper()
     if letter not in word:
@@ -29,18 +26,15 @@ def guess(word, current_word, tries, letter):
                 current_word[i] = letter
     return (True, current_word)
 
-
 def display(current_word):
     os.system('clear')
-    print("\n\nCurrent Word = ", end='')
+    print("\n\nCurrent Word = ", end = '')
     for i in current_word:
-        print(i, end='')
+        print(i,end = '')
     print()
-
 
 def get_letter():
     return input('Enter a character to guess:').upper()
-
 
 def if_won(word, current_word):
     for i in range(len(word)):
@@ -49,23 +43,23 @@ def if_won(word, current_word):
     print("Yay! You've Won!!!")
     return True
 
-
 def if_lost(tries):
     if tries == 0:
         print("Shucks, seems like you've lost")
         return True
     return False
 
-
 def reply(bot_id, message, chat_id):
     url = 'https://api.telegram.org/bot' + str(bot_id) + '/sendMessage'
-    request = {'chat_id': chat_id, 'text': message}
-    response = requests.post(url, json=request)
+    request = {'chat_id' : chat_id, 'text' : message}
+    response = requests.post(url, json = request)
     print(request)
 
-
 def __init__():
-    (status, word, current_word, tries) = new_game()
+    word = []
+    current_word = []
+    tries = []
+    (status, word, current_word, tries) = new_game(word, current_word, tries)
     if not status:
         print("Initialization failed")
         return -1
@@ -81,7 +75,6 @@ def __init__():
             print(letter + ' was not in the word')
             print('remaining tries = ' + str(tries))
         done = if_won(word, current_word) or if_lost(tries)
-
 
 if __name__ == '__main__':
     __init__()
