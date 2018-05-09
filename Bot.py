@@ -71,6 +71,7 @@ def game():
                     user.current_word = None
                     user.tries = 0
     db.session.commit()
+    return "Done"
 
 
 if __name__ == '__main__':
