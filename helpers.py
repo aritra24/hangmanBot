@@ -19,7 +19,7 @@ def guess(word, current_word, tries, letter):
     letter = letter.upper()
     if letter not in word:
         tries -= 1
-        return (False, current_word)
+        return (False, current_word, tries)
     else:
         for i in range(len(word)):
             if word[i] == letter:
