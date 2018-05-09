@@ -36,7 +36,7 @@ def game():
             word = ''.join(word)
             current_word = ''.join(current_word)
             if not db.session.query(User).filter(User.chat_id == chat_id).count():
-                user = (chat_id, word, current_word, tries)
+                user = User(chat_id, word, current_word, tries)
                 db.session.add(user)
             else:
                 user = db.session.query(User).filter(User.chat_id == chat_id).first()
