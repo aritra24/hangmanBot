@@ -44,7 +44,7 @@ def game():
                 user.current_word = current_word
                 user.tries = tries
             reply(bot_id, "Enter a character", chat_id)
-    elif message['text']:
+    elif message['text'].upper() == 'CANCEL':
         if db.session.query(User).filter(User.chat_id == chat_id).count():
             user = db.session.query(User).filter(User.chat_id == chat_id).first()
             user.word = None
@@ -70,6 +70,8 @@ def game():
                     user.word = None
                     user.current_word = None
                     user.tries = 0
+            else:
+                reply(bot_id, "Start a new game first", chat_id)
     db.session.commit()
     return "Done"
 
