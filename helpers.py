@@ -24,7 +24,7 @@ def guess(word, current_word, tries, letter):
         for i in range(len(word)):
             if word[i] == letter:
                 current_word[i] = letter
-    return (True, current_word)
+    return (True, current_word, tries)
 
 def display(current_word):
     os.system('clear')
@@ -67,7 +67,7 @@ def __init__():
     display(current_word)
     while not done:
         letter = get_letter()
-        (result, current_word) = guess(word, current_word, tries, letter)
+        (result, current_word, tries) = guess(word, current_word, tries, letter)
         display(current_word)
         if result:
             print('Well done')
