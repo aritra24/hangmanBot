@@ -43,6 +43,8 @@ def game():
                 user.word = word
                 user.current_word = current_word
                 user.tries = tries
+            reply(bot_id, "New Game started",chat_id)
+            reply(bot_id, "current word is "+current_word,chat_id)
             reply(bot_id, "Enter a character", chat_id)
     elif message['text'].upper() == 'CANCEL':
         if db.session.query(User).filter(User.chat_id == chat_id).count():
@@ -59,7 +61,9 @@ def game():
                 (status, user.current_word, user.tries) = guess(list(user.word), list(user.current_word), user.tries, message['text'])
                 user.current_word = ''.join(user.current_word)
                 if status:
-                    reply(bot_id, 'perfect \nCurrent word is'+current_word, user.chat_id)
+                    reply(bot_id, 'Perfect \nCurrent word is ' + user.current_word, user.chat_id)
+                else:
+                    reply(bot_id, 'Nope \nCurrent word is ' + user.current_word + ' ' + str(user.tries) + ' tries left', user.chat_id)
                 if not if_won(list(user.word), list(user.current_word)) and not if_lost(user.tries):
                     reply(bot_id, 'Enter another character', user.chat_id)
                 else:
