@@ -8,17 +8,21 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+alphanum = '01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
 class User(db.Model):
     __tablename__ = 'users'
     chat_id = db.Column(db.Integer, primary_key = True)
     word = db.Column(db.String(50))
     current_word = db.Column(db.String(50))
+    attempted = db.Column(db.String(36))
     tries = db.Column(db.Integer)
 
-    def __init__(self, chat_id, word, current_word, tries):
+    def __init__(self, chat_id, word, current_word, attempted, tries):
         self.chat_id = chat_id
         self.word = word
         self.current_word = current_word
+        self.attempted = attempted
         self.tries = tries
 
 @app.route('/', methods=['POST'])
@@ -29,54 +33,69 @@ def game():
     chat_id = message['from']['id']
     if message['text'].upper() == 'NEW GAME':
         (status, word, current_word,tries) = new_game()
+        attempted = 0*36
         if not status:
-            reply(bot_id, 'Failed to start new game', chat_id)
+            reply('Failed to start new game', chat_id)
         else:
             word = ''.join(word)
             current_word = ''.join(current_word)
             if not db.session.query(User).filter(User.chat_id == chat_id).count():
-                user = User(chat_id, word, current_word, tries)
+                user = User(chat_id, word, current_word, attempted, tries)
                 db.session.add(user)
             else:
                 user = db.session.query(User).filter(User.chat_id == chat_id).first()
                 user.word = word
                 user.current_word = current_word
+                user.attempted = attempted
                 user.tries = tries
-            reply(bot_id, "New Game started",chat_id)
-            reply(bot_id, "current word is "+current_word,chat_id)
-            reply(bot_id, "Enter a character", chat_id)
+            reply("New Game started",chat_id)
+            reply("current word is "+current_word,chat_id)
+            reply("Enter a character", chat_id)
     elif message['text'].upper() == 'CANCEL':
         if db.session.query(User).filter(User.chat_id == chat_id).count():
             user = db.session.query(User).filter(User.chat_id == chat_id).first()
             user.word = None
             user.current_word = None
             user.tries = 0
-            reply(bot_id,"Cancelled",chat_id)
+            reply("Cancelled",chat_id)
     else:
         if not db.session.query(User).filter(User.chat_id == chat_id).count():
-            reply(bot_id, "Start a new game first", chat_id)
+            reply("Start a new game first", chat_id)
         else:
             user = db.session.query(User).filter(User.chat_id == chat_id).first()
             if user.word != None:
-                (status, user.current_word, user.tries) = guess(list(user.word), list(user.current_word), user.tries, message['text'])
-                user.current_word = ''.join(user.current_word)
-                if status:
-                    reply(bot_id, 'Perfect \nCurrent word is ' + user.current_word, user.chat_id)
+                if message['text'] in alphanum:
+                    if user.attempted[alphanum.index(message['text'])] == 0:
+                        (status, user.current_word, user.attempted, user.tries) = \
+                        guess(list(user.word), list(user.current_word), list(user.attempted), \
+                            user.tries, message['text'])
+                        user.current_word = ''.join(user.current_word)
+                        user.attempted = ''.join(user.attempted)
+                        if status:
+                            reply('Perfect \nCurrent word is ' + user.current_word, user.chat_id)
+                        else:
+                            reply('Nope \nCurrent word is ' + user.current_word + ', \n' \
+                                + str(user.tries) + ' tries left', user.chat_id)
+                    else:
+                        reply('Already attempted, try a different character', user.chat_id)
                 else:
-                    reply(bot_id, 'Nope \nCurrent word is ' + user.current_word + ', ' + str(user.tries) + ' tries left', user.chat_id)
+                    user.tries -= 1
+                    reply('Nope \nCurrent word is ' + user.current_word + ', \n' \
+                                + str(user.tries) + ' tries left', user.chat_id)
                 if not if_won(list(user.word), list(user.current_word)) and not if_lost(user.tries):
-                    reply(bot_id, 'Enter another character', user.chat_id)
+                    reply('Enter another character', user.chat_id)
                 else:
                     if if_lost(user.tries):
-                        reply(bot_id, "Sorry, you've lost", user.chat_id)
-                        reply(bot_id, "The answer was "+ user.word, user.chat_id)
+                        reply("Sorry, you've lost", user.chat_id)
+                        reply("The answer was "+ user.word, user.chat_id)
                     else:
-                        reply(bot_id, "Yay, you've won", user.chat_id)
+                        reply("Yay, you've won", user.chat_id)
                     user.word = None
                     user.current_word = None
+                    user.attempted = '0'*36
                     user.tries = 0
             else:
-                reply(bot_id, "Start a new game first", chat_id)
+                reply("Start a new game first", chat_id)
     db.session.commit()
     return "Done"
 

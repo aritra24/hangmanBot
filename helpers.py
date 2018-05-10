@@ -4,6 +4,7 @@ from urllib.request import urlopen, Request
 from random import randint
 from bs4 import BeautifulSoup
 
+bot_id = os.environ['BOT_ID']
 
 def get_new_word():
     word = []
@@ -30,16 +31,16 @@ def new_game():
     tries = min(len(word)/3, 7)
     return (True, word, current_word, tries)
 
-def guess(word, current_word, tries, letter):
+def guess(word, current_word, tries, attempted, letter):
     letter = letter.upper()
-    if letter not in word:
-        tries -= 1
-        return (False, current_word, tries)
-    else:
-        for i in range(len(word)):
-            if word[i] == letter:
-                current_word[i] = letter
-    return (True, current_word, tries)
+    status = False
+    for i in range(len(word)):
+        if word[i] == letter:
+            status = True
+            current_word[i] = letter
+    if not status:
+        tries -=1
+    return (status, current_word, tries)
 
 def display(current_word):
     os.system('clear')
@@ -64,7 +65,7 @@ def if_lost(tries):
         return True
     return False
 
-def reply(bot_id, message, chat_id):
+def reply(message, chat_id):
     url = 'https://api.telegram.org/bot' + str(bot_id) + '/sendMessage'
     request = {'chat_id' : chat_id, 'text' : message}
     response = requests.post(url, json = request)
