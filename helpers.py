@@ -5,6 +5,7 @@ from random import randint
 from bs4 import BeautifulSoup
 
 bot_id = os.environ['BOT_ID']
+alphanum = list('01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ')
 
 def get_new_word():
     word = []
@@ -40,6 +41,7 @@ def guess(word, current_word, tries, attempted, letter):
             current_word[i] = letter
     if not status:
         tries -=1
+    attempted[alphanum.index(letter)] = '1'
     return (status, current_word, tries)
 
 def display(current_word):

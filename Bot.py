@@ -8,7 +8,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-alphanum = '01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+alphanum = list('01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ')
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -33,7 +33,7 @@ def game():
     chat_id = message['from']['id']
     if message['text'].upper() == 'NEW GAME':
         (status, word, current_word,tries) = new_game()
-        attempted = 0*36
+        attempted = '0'*36
         if not status:
             reply('Failed to start new game', chat_id)
         else:
