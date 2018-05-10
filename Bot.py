@@ -1,9 +1,8 @@
-from flask import Flask, session, request
+from flask import Flask, request
 from helpers import *
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-app.secret_key = 'Super Secret Key'
 bot_id = os.environ['BOT_ID']
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
