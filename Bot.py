@@ -51,6 +51,7 @@ def game():
             user.word = None
             user.current_word = None
             user.tries = 0
+            reply(bot_id,"Cancelled",chat_id)
     else:
         if not db.session.query(User).filter(User.chat_id == chat_id).count():
             reply(bot_id, "Start a new game first", chat_id)
