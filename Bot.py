@@ -63,12 +63,13 @@ def game():
                 if status:
                     reply(bot_id, 'Perfect \nCurrent word is ' + user.current_word, user.chat_id)
                 else:
-                    reply(bot_id, 'Nope \nCurrent word is ' + user.current_word + ' ' + str(user.tries) + ' tries left', user.chat_id)
+                    reply(bot_id, 'Nope \nCurrent word is ' + user.current_word + ', ' + str(user.tries) + ' tries left', user.chat_id)
                 if not if_won(list(user.word), list(user.current_word)) and not if_lost(user.tries):
                     reply(bot_id, 'Enter another character', user.chat_id)
                 else:
                     if if_lost(user.tries):
                         reply(bot_id, "Sorry, you've lost", user.chat_id)
+                        reply(bot_id, "The answer was "+ user.word, user.chat_id)
                     else:
                         reply(bot_id, "Yay, you've won", user.chat_id)
                     user.word = None

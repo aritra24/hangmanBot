@@ -1,8 +1,23 @@
 import os
 import requests
+from urllib.request import urlopen, Request
+from random import randint
+from bs4 import BeautifulSoup
+
 
 def get_new_word():
-    return ['A','B','C','D',' ','E','F','G','A']
+    word = []
+    no_words = randint(1,4)
+    for i in range(no_words):
+        url = Request('https://randomword.com/', headers={'User-Agent': 'Mozilla/5.0'})
+        page = urlopen(url)
+        soup = BeautifulSoup(page, 'html.parser')
+        rand_word = soup.find('div',id='random_word')
+        print(rand_word)
+        rand_word = rand_word.text.upper()
+        word += list(rand_word)+[' ']
+    word.pop()
+    return word
 
 def new_game():
     word = get_new_word()
@@ -12,7 +27,7 @@ def new_game():
     for i in range(len(word)):
         if not word[i].isalnum():
             current_word[i] = word[i]
-    tries = 3
+    tries = min(len(word)/3, 7)
     return (True, word, current_word, tries)
 
 def guess(word, current_word, tries, letter):
@@ -59,7 +74,7 @@ def __init__():
     word = []
     current_word = []
     tries = []
-    (status, word, current_word, tries) = new_game(word, current_word, tries)
+    (status, word, current_word, tries) = new_game()
     if not status:
         print("Initialization failed")
         return -1
