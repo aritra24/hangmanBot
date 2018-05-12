@@ -15,7 +15,7 @@ class User(db.Model):
     chat_id = db.Column(db.Integer, primary_key = True)
     word = db.Column(db.String(50))
     current_word = db.Column(db.String(50))
-    attempted = db.Column(db.String(36))
+    attempted = db.Column(db.String(40))
     tries = db.Column(db.Integer)
 
     def __init__(self, chat_id, word, current_word, attempted, tries):
