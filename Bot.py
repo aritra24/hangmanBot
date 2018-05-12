@@ -65,7 +65,7 @@ def game():
             user = db.session.query(User).filter(User.chat_id == chat_id).first()
             if user.word != None:
                 if message['text'] in alphanum:
-                    if user.attempted[alphanum.index(message['text'])] == '0':
+                    if user.attempted[alphanum.index(message['text'].upper())] == '0':
                         (status, user.current_word, user.attempted, user.tries) = \
                         guess(list(user.word), list(user.current_word), list(user.attempted), \
                             user.tries, message['text'])
@@ -77,7 +77,7 @@ def game():
                             reply('Nope \nCurrent word is ' + user.current_word + ', \n' \
                                 + str(user.tries) + ' tries left', user.chat_id)
                     else:
-                        reply('Already attempted, try a different character', user.chat_id)
+                        reply('Already attempted', user.chat_id)
                 else:
                     user.tries -= 1
                     reply('Nope \nCurrent word is ' + user.current_word + ', \n' \
